@@ -29,6 +29,15 @@ class Ring extends StatelessWidget {
         color: _color,
         // border: Border.all(color: Colors.black),
       ),
+      child: Center(
+        child: Text(
+          '$id',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: _height / 2
+          ),
+        ),
+      ),
     );
   }
 }

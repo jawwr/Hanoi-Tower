@@ -39,11 +39,11 @@ class _HanoiTowerState extends State<HanoiTower> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      // margin: const EdgeInsets.symmetric(horizontal: 20),
       width: 400,
-      height: size.height,
+      height: size.height - 100,
       child: Container(
-        padding: const EdgeInsets.only(top: 30),
+        // padding: const EdgeInsets.only(top: 30),
         child: Stack(
           children: [
             Tower(id: id),

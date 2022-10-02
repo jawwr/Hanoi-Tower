@@ -35,11 +35,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   void _hanoi(
-      Ring currentCube,
-      HanoiTower start,
-      HanoiTower mid,
-      //логика просчета ходов для решения
-      HanoiTower end) {
+      Ring currentCube, HanoiTower start, HanoiTower mid, HanoiTower end) {
+    //логика просчета ходов для решения
     if (currentCube.id == 1) {
       // print("${currentCube.id} из ${start.id} в ${end.id}");
       func.add(() => _swap(currentCube.id, start, end));
@@ -84,22 +81,26 @@ class _MyHomePageState extends State<MyHomePage> {
       id: 3,
     ),
   ];
-  late List<Ring> _rings = [];
+  List<Ring> _rings = [];
+  int _ringsCount = 3;
+  bool _isStart = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _rings = _generateRings(10, 700);
-    _towers.first.rings = List.of(_rings);
-    Future.delayed(const Duration(seconds: 1), () {
-      var start = DateTime.now();
+  void _start(int ringCount) {
+    setState(() {
+      _rings = _generateRings(ringCount, 700);
+      _towers.first.rings = List.of(_rings);
+      Future.delayed(const Duration(seconds: 1), () {
+        // var start = DateTime.now();
 
-      _hanoi(_rings.last, _towers.first, _towers[1],
-          _towers.last); //Вызов логики просчета решения
-      var stop = DateTime.now();
-      print('start: $start');
-      print('stop: $stop');
-      print('Время выполнения: ${stop.difference(start).inMilliseconds} ms');
+        _hanoi(_rings.last, _towers.first, _towers[1],
+            _towers.last); //Вызов логики просчета решения
+        // var stop = DateTime.now();
+        // print('start: $start');
+        // print('stop: $stop');
+        // print('Время выполнения: ${stop.difference(start).inMilliseconds} ms');
+      });
+
+      _isStart = true;
     });
 
     Future.delayed(const Duration(seconds: 1), () async {
@@ -112,12 +113,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   List<Ring> _generateRings(int count, double height) {
     //генерация колец
     List<Ring> rings = [];
     double width = 350;
     double dif = 300 / (2 * count);
-    double ringsHeight = (height - 200) / count;
+    double ringsHeight = (height - 300) / count;
     for (int i = count; i > 0; i--) {
       rings.insert(
         0,
@@ -135,9 +141,111 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: _towers,
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          InputRingCountBar(
+            func: _start,
+            isStart: _isStart,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: _towers,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class InputRingCountBar extends StatelessWidget {
+  InputRingCountBar({Key? key, required this.func, required this.isStart})
+      : super(key: key);
+  final void Function(int) func;
+  final bool isStart;
+  final TextEditingController controller = TextEditingController();
+
+  void _start() {
+    String input = controller.text;
+    if(_validate(input) != null) {
+      int value = int.tryParse(input)!;
+      func(value);
+    }
+  }
+
+  String? _validate(String? input){
+    if(input != null){
+      return "Ничего не введено";
+    }
+    if(int.tryParse(input!) != null){
+      return null;
+    }
+    return "Not a number";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      width: 350,
+      // color: Colors.cyan,
+      child: Center(
+        child: Container(
+          height: 50,
+          child: Row(
+            children: [
+              Flexible(
+                child: Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(50),
+                      bottomLeft: Radius.circular(50),
+                    ),
+                  ),
+                  child: TextFormField(
+                    validator: _validate,
+                    controller: controller,
+                    onEditingComplete: _start,
+                    decoration: InputDecoration(
+                      errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                      border: InputBorder.none,
+                      hintText: 'Введите количество колец',
+                      enabled: !isStart,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20)
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: !isStart ? _start : (){},
+                behavior: HitTestBehavior.translucent,
+                child: Container(
+                  width: 100,
+                  height: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.cyan,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(50),
+                      bottomRight: Radius.circular(50),
+                    ),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Start',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

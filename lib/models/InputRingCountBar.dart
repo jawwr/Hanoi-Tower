@@ -5,12 +5,14 @@ class InputRingCountBar extends StatelessWidget {
       {Key? key,
       required this.func,
       required this.isStart,
-      required this.restart})
-      : super(key: key);
+      required this.restart,
+      required String count})
+      : _controller = TextEditingController()..text = count,
+        super(key: key);
   final void Function(int, double) func;
   final bool isStart;
   final void Function() restart;
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller;
   late final double _height;
 
   void _start() {
@@ -62,7 +64,7 @@ class InputRingCountBar extends StatelessWidget {
     return Flexible(
       child: Container(
         height: 200,
-        width: 300,
+        width: 250,
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: Colors.grey),
@@ -76,12 +78,13 @@ class InputRingCountBar extends StatelessWidget {
           controller: _controller,
           onEditingComplete: _start,
           decoration: InputDecoration(
-              errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red)),
-              border: InputBorder.none,
-              hintText: 'Введите количество колец',
-              enabled: !isStart,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20)),
+            errorBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red)),
+            border: InputBorder.none,
+            hintText: 'Введите количество колец',
+            enabled: !isStart,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+          ),
         ),
       ),
     );
@@ -90,7 +93,7 @@ class InputRingCountBar extends StatelessWidget {
   Widget _restartButton() {
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 200),
-      right: isStart ? 100 : 200,
+      right: isStart ? 120 : 200,
       top: 5,
       child: GestureDetector(
         onTap: restart,

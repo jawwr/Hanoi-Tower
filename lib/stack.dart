@@ -1,42 +1,33 @@
-class Stack<T extends Object>{
-  late List<T> _elements;
+class MyStack<T extends Object> {
+  List<T> elements = [];
 
-  set elements(List<T> value) {
-    _elements = value;
+  MyStack.copyOfList(List<T> copyList) {
+    elements = List.of(copyList);
+    length = copyList.length;
+  }
+
+  MyStack.copyOfStack(MyStack<T> copyStack) {
+    elements = List.of(copyStack.elements);
+    length = copyStack.length;
   }
 
   int length = 0;
 
   bool get isEmpty => length == 0;
 
-  List<T> get elements => _elements;
-
-  Stack();
-
-  static Stack copyOfList(List copyList) {
-    Stack newStack = Stack();
-    for (var elem in copyList) {
-      newStack.push(elem);
-    }
-    return newStack..length = copyList.length;
-  }
-
-  static Stack copyOfStack(Stack copyStack) {
-    Stack newStack = Stack()
-      ..elements = copyStack.elements
-      ..length = copyStack.length;
-    return newStack;
-  }
+  MyStack();
 
   void push(T newElement) {
-    _elements.insert(0, newElement);
-  }
-  T head(){
-    return _elements.first;
+    length++;
+    elements.insert(0, newElement);
   }
 
-  T tail(){
-    return _elements.last;
+  T head() {
+    return elements.first;
+  }
+
+  T tail() {
+    return elements.last;
   }
 
   T? pop() {
@@ -44,7 +35,7 @@ class Stack<T extends Object>{
       return null;
     }
     T firstElem = head();
-    _elements.remove(firstElem);
+    elements.remove(firstElem);
     return firstElem;
   }
 }

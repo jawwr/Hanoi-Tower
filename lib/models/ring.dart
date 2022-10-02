@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Ring extends StatelessWidget {
+class Ring extends StatefulWidget {
   const Ring(
       {Key? key,
       required width,
@@ -17,25 +17,31 @@ class Ring extends StatelessWidget {
   final int id;
 
   @override
+  State<Ring> createState() => _RingState();
+}
+
+class _RingState extends State<Ring> with SingleTickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      width: _width,
-      height: _height,
+      width: widget._width,
+      height: widget._height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(_height / 5),
-          topRight: Radius.circular(_height / 5),
+          topLeft: Radius.circular(widget._height / 5),
+          topRight: Radius.circular(widget._height / 5),
         ),
-        color: _color,
-        // border: Border.all(color: Colors.black),
+        color: widget._color,
       ),
       child: Center(
         child: Text(
-          '$id',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: _height / 2
-          ),
+          '${widget.id}',
+          style: TextStyle(color: Colors.white, fontSize: widget._height / 2),
         ),
       ),
     );

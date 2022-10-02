@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:hanoi/models/constants.dart';
+import 'package:hanoi/stack.dart';
 
 import 'models/InputRingCountBar.dart';
 import 'models/ring.dart';
@@ -62,35 +63,37 @@ class _MyHomePageState extends State<MyHomePage> {
     //логика перемещения колец между башнями
     setState(() {
       Ring ring = _findCubeById(ringId);
-      towerFrom.rings.remove(ring);
-      towerTo.rings.insert(0, ring);
+      towerFrom.rings.pop();
+      towerTo.rings.push(ring);
     });
   }
 
   final List<HanoiTower> _towers = [
     //изначальный список всех башен
     HanoiTower(
-      rings: List.empty(growable: true),
+      rings: MyStack(),
       id: 1,
     ),
     HanoiTower(
-      rings: List.empty(growable: true),
+      rings: MyStack(),
       id: 2,
     ),
     HanoiTower(
-      rings: List.empty(growable: true),
+      rings: MyStack(),
       id: 3,
     ),
   ];
   List<Ring> _rings = [];
   bool _isStart = false;
+  int _count = 0;
 
-  void _restart(){
+  void _restart() {
     setState(() {
       _rings = [];
-      for(var towers in _towers){
-        towers.rings = List.of(_rings);
+      for (var towers in _towers) {
+        towers.rings = MyStack<Ring>.copyOfList(_rings);
       }
+      _count = 0;
       func = [];
       _isStart = false;
     });
@@ -98,8 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _start(int ringCount, double height) {
     setState(() {
+      _count = ringCount;
       _rings = _generateRings(ringCount, height);
-      _towers.first.rings = List.of(_rings);
+      _towers.first.rings = MyStack.copyOfList(_rings);
 
       Future.delayed(const Duration(seconds: 1), () {
         // var start = DateTime.now();
@@ -118,7 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
     Future.delayed(const Duration(seconds: 1), () async {
       for (int i = 0; i < func.length; i++) {
         await Future.delayed(const Duration(milliseconds: 500), () {
-          func[i](); //Из-за того, что в флаттере задержка асинхронная приходится записывать в лист функций и вызывать
+          func[
+              i](); //Из-за того, что в флаттере задержка асинхронная приходится записывать в лист функций и вызывать
         });
       }
     });
@@ -160,6 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
             func: _start,
             isStart: _isStart,
             restart: _restart,
+            count: _count != 0 ? _count.toString() : '',
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -170,5 +176,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-

@@ -89,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _restart() {
     setState(() {
+      HanoiTower.stop();
       _rings = [];
       for (var towers in _towers) {
         towers.rings = MyStack<Ring>.copyOfList(_rings);
@@ -104,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _count = ringCount;
       _rings = _generateRings(ringCount, height);
       _towers.first.rings = MyStack.copyOfList(_rings);
+      HanoiTower.start();
 
       Future.delayed(const Duration(seconds: 1), () {
         // var start = DateTime.now();

@@ -6,10 +6,17 @@ import 'package:hanoi/stack.dart';
 
 import 'ring.dart';
 
-
 class HanoiTower extends StatefulWidget {
   MyStack<Ring> rings;
   final int id;
+
+  static void start(){
+    _HanoiTowerState._isStart  = true;
+  }
+
+  static void stop(){
+    _HanoiTowerState._isStart = false;
+  }
 
   HanoiTower({Key? key, required this.rings, required this.id})
       : super(key: key);
@@ -19,19 +26,24 @@ class HanoiTower extends StatefulWidget {
 }
 
 class _HanoiTowerState extends State<HanoiTower> {
-  late List<Ring> rings;
-  late final int id;
+  late List<Ring> _rings;
+  late final int _id;
+  static bool _isStart = false;
 
   @override
   void initState() {
     super.initState();
-    rings = widget.rings.elements;
-    id = widget.id;
-    Timer.periodic(const Duration(milliseconds: 50), (timer) {//таймер на каждой башне чтобы чекать изменения и сразу отображать (без этого обновление башен происходит с дикой задержкой)
-      setState(() {
-        rings = widget.rings.elements;
-      });
-    });
+    _rings = widget.rings.elements;
+    _id = widget.id;
+    Timer.periodic(
+      const Duration(milliseconds: 100),
+      (timer) {
+        //таймер на каждой башне чтобы чекать изменения и сразу отображать (без этого обновление башен происходит с дикой задержкой)
+        setState(() {
+          _rings = widget.rings.elements;
+        });
+      },
+    );
   }
 
   @override
@@ -42,13 +54,17 @@ class _HanoiTowerState extends State<HanoiTower> {
       height: size.height - 100,
       child: Stack(
         children: [
-          Tower(id: id),
-          Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: rings,
+          Tower(id: _id),
+          AnimatedOpacity(
+            opacity: _isStart ? 1 : 0,
+            duration: const Duration(milliseconds: 100),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: _rings,
+                ),
               ),
             ),
           ),

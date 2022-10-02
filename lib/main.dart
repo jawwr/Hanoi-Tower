@@ -4,7 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hanoi/models/constants.dart';
 
-import 'models/cube.dart';
+import 'models/InputRingCountBar.dart';
+import 'models/ring.dart';
 import 'models/hanoiTowers.dart';
 
 void main() {
@@ -69,26 +70,37 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<HanoiTower> _towers = [
     //изначальный список всех башен
     HanoiTower(
-      rings: [],
+      rings: List.empty(growable: true),
       id: 1,
     ),
     HanoiTower(
-      rings: [],
+      rings: List.empty(growable: true),
       id: 2,
     ),
     HanoiTower(
-      rings: [],
+      rings: List.empty(growable: true),
       id: 3,
     ),
   ];
   List<Ring> _rings = [];
-  int _ringsCount = 3;
   bool _isStart = false;
 
-  void _start(int ringCount) {
+  void _restart(){
     setState(() {
-      _rings = _generateRings(ringCount, 700);
+      _rings = [];
+      for(var towers in _towers){
+        towers.rings = List.of(_rings);
+      }
+      func = [];
+      _isStart = false;
+    });
+  }
+
+  void _start(int ringCount, double height) {
+    setState(() {
+      _rings = _generateRings(ringCount, height);
       _towers.first.rings = List.of(_rings);
+
       Future.delayed(const Duration(seconds: 1), () {
         // var start = DateTime.now();
 
@@ -106,8 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Future.delayed(const Duration(seconds: 1), () async {
       for (int i = 0; i < func.length; i++) {
         await Future.delayed(const Duration(milliseconds: 500), () {
-          func[
-              i](); //Из-за того, что в флаттере задержка асинхронная приходится записывать в лист функций и вызывать
+          func[i](); //Из-за того, что в флаттере задержка асинхронная приходится записывать в лист функций и вызывать
         });
       }
     });
@@ -123,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
     List<Ring> rings = [];
     double width = 350;
     double dif = 300 / (2 * count);
-    double ringsHeight = (height - 300) / count;
+    double ringsHeight = (height - 350) / count;
     for (int i = count; i > 0; i--) {
       rings.insert(
         0,
@@ -148,6 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
           InputRingCountBar(
             func: _start,
             isStart: _isStart,
+            restart: _restart,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -159,94 +171,4 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class InputRingCountBar extends StatelessWidget {
-  InputRingCountBar({Key? key, required this.func, required this.isStart})
-      : super(key: key);
-  final void Function(int) func;
-  final bool isStart;
-  final TextEditingController controller = TextEditingController();
 
-  void _start() {
-    String input = controller.text;
-    if(_validate(input) != null) {
-      int value = int.tryParse(input)!;
-      func(value);
-    }
-  }
-
-  String? _validate(String? input){
-    if(input != null){
-      return "Ничего не введено";
-    }
-    if(int.tryParse(input!) != null){
-      return null;
-    }
-    return "Not a number";
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      width: 350,
-      // color: Colors.cyan,
-      child: Center(
-        child: Container(
-          height: 50,
-          child: Row(
-            children: [
-              Flexible(
-                child: Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      bottomLeft: Radius.circular(50),
-                    ),
-                  ),
-                  child: TextFormField(
-                    validator: _validate,
-                    controller: controller,
-                    onEditingComplete: _start,
-                    decoration: InputDecoration(
-                      errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
-                      border: InputBorder.none,
-                      hintText: 'Введите количество колец',
-                      enabled: !isStart,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20)
-                    ),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: !isStart ? _start : (){},
-                behavior: HitTestBehavior.translucent,
-                child: Container(
-                  width: 100,
-                  height: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.cyan,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      bottomRight: Radius.circular(50),
-                    ),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Start',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

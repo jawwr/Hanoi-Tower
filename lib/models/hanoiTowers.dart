@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hanoi/models/tower.dart';
 
-import 'cube.dart';
+import 'ring.dart';
 
 class HanoiTower extends StatefulWidget {
   List<Ring> rings;

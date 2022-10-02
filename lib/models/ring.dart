@@ -22,9 +22,9 @@ class Ring extends StatelessWidget {
       width: _width,
       height: _height,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(10),
-          topRight: Radius.circular(10),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(_height / 5),
+          topRight: Radius.circular(_height / 5),
         ),
         color: _color,
         // border: Border.all(color: Colors.black),

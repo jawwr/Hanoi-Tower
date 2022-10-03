@@ -100,10 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _start(int ringCount, double height) {
+  void _start(int ringCount, Size size) {
     setState(() {
       _count = ringCount;
-      _rings = _generateRings(ringCount, height);
+      _rings = _generateRings(ringCount, size);
       _towers.first.rings = MyStack.copyOfList(_rings);
       HanoiTower.start();
 
@@ -136,12 +136,12 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  List<Ring> _generateRings(int count, double height) {
+  List<Ring> _generateRings(int count, Size size) {
     //генерация колец
     List<Ring> rings = [];
-    double width = 350;
-    double dif = 300 / (2 * count);
-    double ringsHeight = (height - 350) / count;
+    double width = size.width * .28 - 50;
+    double dif = (width - 50) / (2 * count);
+    double ringsHeight = (size.height - 350) / count;
     for (int i = count; i > 0; i--) {
       rings.insert(
         0,

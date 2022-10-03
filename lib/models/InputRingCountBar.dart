@@ -9,17 +9,17 @@ class InputRingCountBar extends StatelessWidget {
       required String count})
       : _controller = TextEditingController()..text = count,
         super(key: key);
-  final void Function(int, double) func;
+  final void Function(int, Size) func;
   final bool isStart;
   final void Function() restart;
   final TextEditingController _controller;
-  late final double _height;
+  late final Size _size;
 
   void _start() {
     String input = _controller.text;
     if (_validate(input) == null) {
       int value = int.tryParse(input)!;
-      func(value, _height);
+      func(value, _size);
     }
   }
 
@@ -35,8 +35,7 @@ class InputRingCountBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    _height = size.height;
+    _size = MediaQuery.of(context).size;
     return Container(
       height: 100,
       width: 700,

@@ -50,7 +50,7 @@ class _HanoiTowerState extends State<HanoiTower> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return SizedBox(
-      width: 400,
+      width: size.width * .28,
       height: size.height - 100,
       child: Stack(
         children: [
@@ -59,7 +59,7 @@ class _HanoiTowerState extends State<HanoiTower> {
             opacity: _isStart ? 1 : 0,
             duration: const Duration(milliseconds: 100),
             child: Container(
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: EdgeInsets.only(bottom: (size.height * .02)),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,

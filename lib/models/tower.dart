@@ -12,7 +12,7 @@ class Tower extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          width: 40,
+          width: size.width * .02,
           height: size.height - 300,
           decoration: const BoxDecoration(
             color: Colors.brown,
@@ -23,7 +23,7 @@ class Tower extends StatelessWidget {
           ),
         ),
         Container(
-          height: 20,
+          height: size.height * .02,
           decoration: const BoxDecoration(
             color: Colors.brown,
             borderRadius: BorderRadius.only(
